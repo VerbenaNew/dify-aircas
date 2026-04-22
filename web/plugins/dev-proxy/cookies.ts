@@ -22,16 +22,10 @@ const shouldUseHostPrefix = (cookieName: string) => {
 }
 
 const toUpstreamCookieName = (cookieName: string) => {
-  if (cookieName.startsWith('__Host-'))
-    return cookieName
-
-  if (cookieName.startsWith('__Secure-'))
-    return `__Host-${cookieName.replace(SECURE_COOKIE_PREFIX_PATTERN, '')}`
-
-  if (!shouldUseHostPrefix(cookieName))
-    return cookieName
-
-  return `__Host-${cookieName}`
+  // Keep cookie names unchanged for dev proxy.
+  // In HTTP/local-network development, forcing __Host- prefix can make
+  // upstream auth middleware fail to locate access/refresh/csrf cookies.
+  return cookieName
 }
 
 const toLocalCookieName = (cookieName: string) => cookieName.replace(SECURE_COOKIE_PREFIX_PATTERN, '')
